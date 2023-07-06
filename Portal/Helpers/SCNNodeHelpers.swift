@@ -174,6 +174,7 @@ func makeWallNode(length: CGFloat = WALL_LENGTH, height: CGFloat = WALL_HEIGHT, 
   innerWall.firstMaterial?.selfIllumination.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Gloss.png")
   
   let innerWallNode = SCNNode(geometry: innerWall)
+  innerWallNode.renderingOrder = 100
   wallNode.addChildNode(innerWallNode)
 
   
