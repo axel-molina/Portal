@@ -98,7 +98,7 @@ func makeFloorNode() -> SCNNode{
   innerFloor.firstMaterial?.normal.contents = UIImage(named: "Assets.scnassets/floor/textures/Floor_Normal.png")
   innerFloor.firstMaterial?.roughness.contents = UIImage(named: "Assets.scnassets/floor/textures/Floor_Roughness.png")
   innerFloor.firstMaterial?.specular.contents = UIImage(named: "Assets.scnassets/floor/textures/Floor_Specular.png")
-  innerFloor.firstMaterial?.selfIllumination.contents = UIImage(named: "Assets.scnassets/floor/textures/Floor_Glossr.png")
+  innerFloor.firstMaterial?.selfIllumination.contents = UIImage(named: "Assets.scnassets/floor/textures/Floor_Gloss.png")
   
   repeatTextures(geometry: innerFloor, scaleX: SCALEX, scaleY: SCALEY)
   
@@ -114,6 +114,71 @@ func makeFloorNode() -> SCNNode{
 }
 
 // Crear el techo
+func makeCeilingNode() -> SCNNode{
+  
+  let outerCeilingNode = makeOuterSurfaceNode(width: SURFACE_WIDTH, height: SURFACE_HEIGHT, length: SURFACE_LENGTH)
+  
+  outerCeilingNode.position = SCNVector3(SURFACE_HEIGHT*0.5, SURFACE_HEIGHT,0)
+  
+  let ceilingNode = SCNNode()
+  
+  let innerCeiling = SCNBox(width: SURFACE_WIDTH, height: SURFACE_HEIGHT, length: SURFACE_LENGTH, chamferRadius: 0)
+  
+  innerCeiling.firstMaterial?.lightingModel = .physicallyBased
+  
+  innerCeiling.firstMaterial?.diffuse.contents = UIImage(named: "Assets.scnassets/ceiling/textures/Ceiling_Diffuse.png")
+  innerCeiling.firstMaterial?.normal.contents = UIImage(named: "Assets.scnassets/ceiling/textures/Ceiling_Normal.png")
+  innerCeiling.firstMaterial?.emission.contents = UIImage(named: "Assets.scnassets/ceiling/textures/Ceiling_Emis.png")
+  innerCeiling.firstMaterial?.specular.contents = UIImage(named: "Assets.scnassets/ceiling/textures/Ceiling_Specular.png")
+  innerCeiling.firstMaterial?.selfIllumination.contents = UIImage(named: "Assets.scnassets/ceiling/textures/Ceiling_Gloss.png")
+  
+  repeatTextures(geometry: innerCeiling, scaleX: SCALEX, scaleY: SCALEY)
+  
+  let innerCeilingNode = SCNNode(geometry: innerCeiling)
+  innerCeilingNode.renderingOrder = 100
+  
+  innerCeilingNode.position = SCNVector3(SURFACE_HEIGHT*0.5,0,0)
+  
+  ceilingNode.addChildNode(innerCeilingNode)
+  
 
+  return ceilingNode
+  
+}
+
+// Crear paredes
+func makeWallNode(length: CGFloat = WALL_LENGTH, height: CGFloat = WALL_HEIGHT, maskLowerSide: Bool = false)->SCNNode{
+  
+  let outerWall = SCNBox(width: WALL_WIDTH, height: WALL_HEIGHT, length: WALL_LENGTH, chamferRadius: 0)
+  
+  outerWall.firstMaterial?.diffuse.contents = UIColor.white
+  outerWall.firstMaterial?.transparency = 0.000001
+  
+  let outerWallNode = SCNNode(geometry: outerWall)
+  let multiplier:CGFloat = maskLowerSide ? -1 : 1
+  outerWallNode.position = SCNVector3(WALL_WIDTH*multiplier, 0, 0)
+  outerWallNode.renderingOrder = 10
+  
+  let wallNode = SCNNode()
+  wallNode.addChildNode(outerWallNode)
+  
+  let innerWall = SCNBox(width: WALL_WIDTH, height: height, length: length, chamferRadius: 0)
+  
+  innerWall.firstMaterial?.lightingModel = .physicallyBased
+  
+  innerWall.firstMaterial?.diffuse.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Diffuse.png")
+  innerWall.firstMaterial?.metalness.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Metalness.png")
+  innerWall.firstMaterial?.roughness.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Roughness.png")
+  innerWall.firstMaterial?.normal.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Normal.png")
+  innerWall.firstMaterial?.specular.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Spec.png")
+  innerWall.firstMaterial?.selfIllumination.contents = UIImage(named: "Assets.scnassets/wall/textures/Walls_Gloss.png")
+  
+  let innerWallNode = SCNNode(geometry: innerWall)
+  wallNode.addChildNode(innerWallNode)
+
+  
+  return wallNode
+  
+}
 
 

@@ -7,6 +7,9 @@ class PortalViewController: UIViewController {
   
   let POSITION_Y:CGFloat = -WALL_HEIGHT*0.5
   let POSITION_Z:CGFloat = -SURFACE_LENGTH*0.5
+  
+  let DOOR_WIDTH:CGFloat = 1.0
+  let DOOR_HEIGHT:CGFloat = 2.4
 
   @IBOutlet weak var crosshair: UIView!
   @IBOutlet var sceneView: ARSCNView?
@@ -83,13 +86,53 @@ class PortalViewController: UIViewController {
   func makePortal() -> SCNNode {
     let portal = SCNNode()
     
+    // Suelo
     let floorNode = makeFloorNode()
     floorNode.position = SCNVector3(0, POSITION_Y, POSITION_Z)
-    
     portal.addChildNode(floorNode)
+    // Techo
+    let ceilingNode = makeCeilingNode()
+    ceilingNode.position = SCNVector3(0, POSITION_Y+WALL_HEIGHT, POSITION_Z)
+    portal.addChildNode(ceilingNode)
+    // Pared del fondo
+    let farWallNode = makeWallNode()
+    farWallNode.eulerAngles = SCNVector3(0,90.0.degreesToRadians,0)
+    farWallNode.position = SCNVector3(0,POSITION_Y+WALL_HEIGHT*0.5,POSITION_Z-SURFACE_LENGTH*0.5)
+    portal.addChildNode(farWallNode)
+    // Pared derecha
+    let rightSideWallNode = makeWallNode(maskLowerSide:true)
+    rightSideWallNode.eulerAngles = SCNVector3(0,180.0.degreesToRadians,0)
+    rightSideWallNode.position = SCNVector3(WALL_LENGTH*0.5, POSITION_Y+WALL_HEIGHT*0.5, POSITION_Z)
+    portal.addChildNode(rightSideWallNode)
+    // Pared izquierda
+    let leftSideWallNode = makeWallNode(maskLowerSide:true)
+    leftSideWallNode.position = SCNVector3(-WALL_LENGTH*0.5,POSITION_Y+WALL_HEIGHT*0.5, POSITION_Z)
+    portal.addChildNode(leftSideWallNode)
+    
+    addDoorWay(node: portal)
     
     return portal
   }
+  
+  // Agregar puerta
+  func addDoorWay(node:SCNNode){
+    
+    let halfWallLength:CGFloat = WALL_LENGTH*0.5
+    let frontHalfWallLength:CGFloat = (WALL_LENGTH-DOOR_WIDTH)*0.5
+    
+    let rightDoorSideNode = makeWallNode(length: frontHalfWallLength)
+    rightDoorSideNode.eulerAngles = SCNVector3(0,270.0.degreesToRadians,0)
+    rightDoorSideNode.position = SCNVector3(halfWallLength - 0.5*DOOR_WIDTH, POSITION_Y+WALL_HEIGHT*0.5, POSITION_Z+SURFACE_LENGTH*0.5)
+    node.addChildNode(rightDoorSideNode)
+    
+    let leftDoorSideNode = makeWallNode(length: frontHalfWallLength)
+    leftDoorSideNode.eulerAngles = SCNVector3(0,270.0.degreesToRadians,0)
+    rightDoorSideNode.position = SCNVector3(-halfWallLength + 0.5*frontHalfWallLength, POSITION_Y+WALL_HEIGHT*0.5, POSITION_Z+SURFACE_LENGTH*0.5)
+    node.addChildNode(rightDoorSideNode)
+    
+  }
+  
+  
   
 }
 
